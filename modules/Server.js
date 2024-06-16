@@ -53,6 +53,26 @@ class Server {
             const affiliations = await this.fetchAffiliationData();
             res.render('affiliations', { affiliations });
         });
+
+        this.app.get('/rids', async (req, res) => {
+            const rids = await this.fetchRIDData();
+            res.render('rids', { rids });
+        });
+
+        this.app.get('/tgids', async (req, res) => {
+            const tgids = await this.fetchTGData();
+            res.render('tgids', { tgids });
+        });
+
+        this.app.get('/rid/query', this.handleRIDQuery.bind(this));
+        this.app.put('/rid/add', this.handleRIDAdd.bind(this));
+        this.app.put('/rid/delete', this.handleRIDDelete.bind(this));
+        this.app.get('/rid/commit', this.handleRIDCommit.bind(this));
+
+        this.app.get('/tg/query', this.handleTGQuery.bind(this));
+        this.app.put('/tg/add', this.handleTGAdd.bind(this));
+        this.app.put('/tg/delete', this.handleTGDelete.bind(this));
+        this.app.get('/tg/commit', this.handleTGCommit.bind(this));
     }
 
     setupSocketIO() {
@@ -85,6 +105,28 @@ class Server {
             return response.affiliations || [];
         } catch (error) {
             console.error('Error fetching affiliation data:', error);
+            return [];
+        }
+    }
+
+    async fetchRIDData() {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/rid/query', {});
+            return response.rids || [];
+        } catch (error) {
+            console.error('Error fetching RID data:', error);
+            return [];
+        }
+    }
+
+    async fetchTGData() {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/tg/query', {});
+            return response.tgs || [];
+        } catch (error) {
+            console.error('Error fetching TG data:', error);
             return [];
         }
     }
@@ -161,6 +203,88 @@ class Server {
         allData.affiliations = affiliationData;
 
         this.io.emit('update', allData);
+    }
+
+    // TODO: Refactor these handlers into a separate class
+
+    async handleRIDQuery(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/rid/query', {});
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error fetching RID data' });
+        }
+    }
+
+    async handleRIDAdd(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('PUT', '/rid/add', req.body);
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error adding RID' });
+        }
+    }
+
+    async handleRIDDelete(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('PUT', '/rid/delete', req.body);
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error deleting RID' });
+        }
+    }
+
+    async handleRIDCommit(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/rid/commit', {});
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error committing RID changes' });
+        }
+    }
+
+    async handleTGQuery(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/tg/query', {});
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error fetching TG data' });
+        }
+    }
+
+    async handleTGAdd(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('PUT', '/tg/add', req.body);
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error adding TG' });
+        }
+    }
+
+    async handleTGDelete(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('PUT', '/tg/delete', req.body);
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error deleting TG' });
+        }
+    }
+
+    async handleTGCommit(req, res) {
+        const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
+        try {
+            const response = await restClient.send('GET', '/tg/commit', {});
+            res.json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Error committing TG changes' });
+        }
     }
 
     start() {

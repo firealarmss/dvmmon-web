@@ -104,3 +104,20 @@ body.dark-mode .navbar-light .navbar-toggler-icon {
 .dark-mode .table td, .dark-mode .table th {
     color: #f8f9fa;
 }
+
+.modal-content {
+    background-color: #ffffff;
+    color: #212529;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .modal-content {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+body.dark-mode .form-control {
+    background-color: #495057;
+    color: #f8f9fa;
+    border: 1px solid #6c757d;
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TGID Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<%- include('partials/header', { user: null }) %>
+
+<div class="container">
+    <h1 class="mt-5">TGID Management</h1>
+    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addTgModal">Add TG</button>
+    <button class="btn btn-success mb-3" onclick="commitTG()">Commit TG</button>
+    <div id="tgids"></div>
+</div>
+
+<div class="modal fade" id="addTgModal" tabindex="-1" role="dialog" aria-labelledby="addTgModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTgModalLabel">Add TG</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addTgForm">
+                    <div class="form-group">
+                        <label for="tgid">TGID</label>
+                        <input type="number" class="form-control" id="tgid" name="tgid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="slot">Slot</label>
+                        <input type="number" class="form-control" id="slot" name="slot" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="active">Active</label>
+                        <input type="checkbox" class="form-control" id="active" name="active">
+                    </div>
+                    <div class="form-group">
+                        <label for="parrot">Parrot</label>
+                        <input type="checkbox" class="form-control" id="parrot" name="parrot">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add TG</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editTgModal" tabindex="-1" role="dialog" aria-labelledby="editTgModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTgModalLabel">Edit TGID</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editTgForm">
+                    <input type="hidden" id="editTgId">
+                    <div class="form-group">
+                        <label for="editTgName">TGID Name</label>
+                        <input type="text" class="form-control" id="editTgName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTgSlot">Slot</label>
+                        <input type="number" class="form-control" id="editTgSlot" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTgIdInput">TGID</label>
+                        <input type="number" class="form-control" id="editTgIdInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTgActive">Active</label>
+                        <select class="form-control" id="editTgActive" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTgParrot">Parrot</label>
+                        <select class="form-control" id="editTgParrot" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTgAffiliated">Affiliated</label>
+                        <select class="form-control" id="editTgAffiliated" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/tgids.js"></script>
+<script src="/js/theme-toggle.js"></script>
+</body>
+</html>

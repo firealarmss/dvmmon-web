@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RID Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<%- include('partials/header', { user: null }) %>
+
+<div class="container">
+    <h1 class="mt-5">RID Management</h1>
+    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addRidModal">Add RID</button>
+    <button class="btn btn-success mb-3" onclick="commitRID()">Commit RID</button>
+    <div id="rids"></div>
+</div>
+
+<div class="modal fade" id="addRidModal" tabindex="-1" role="dialog" aria-labelledby="addRidModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRidModalLabel">Add RID</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRidForm">
+                    <div class="form-group">
+                        <label for="rid">RID</label>
+                        <input type="number" class="form-control" id="rid" name="rid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="enabled">Enabled</label>
+                        <select class="form-control" id="enabled" name="enabled" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alias">Alias</label>
+                        <input type="text" class="form-control" id="alias" name="alias">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add RID</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/rids.js"></script>
+<script src="/js/theme-toggle.js"></script>
+</body>
+</html>
