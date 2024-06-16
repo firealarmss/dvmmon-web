@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then(response => response.json()).then(data => {
             console.log('Success:', data);
             $('#editTgModal').modal('hide');
-            //location.reload();
+            location.reload();
         }).catch(error => {
             console.error('Error:', error);
         });
