@@ -14,5 +14,5 @@ nvm use 18
 git clone https://github.com/firealarmss/dvmmon-web
 cd dvmmon-web
 npm i
-node index.js -c configs/config.yml
+npm run
 ```
