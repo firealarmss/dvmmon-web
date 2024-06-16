@@ -1,0 +1,106 @@
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+.container {
+    padding: 20px;
+}
+
+.site-box, .card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .site-box, body.dark-mode .card {
+    background-color: #343a40;
+    border-color: #495057;
+}
+
+.control-channel-box, .repeater-box, .card-header {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    margin-bottom: 10px;
+    padding: 15px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .control-channel-box, body.dark-mode .repeater-box, body.dark-mode .card-header {
+    background-color: #495057;
+    border-color: #6c757d;
+}
+
+.voice-channel {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.25rem;
+    margin-bottom: 10px;
+    padding: 15px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .voice-channel {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.voice-channel.keyed {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+body.dark-mode .voice-channel.keyed {
+    background-color: #28a745;
+    border-color: #218838;
+}
+
+h2, h3, h5 {
+    margin-bottom: 15px;
+}
+
+.card-body {
+    padding: 0;
+}
+
+.navbar {
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .navbar {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+body.dark-mode .navbar-light .navbar-brand {
+    color: #f8f9fa;
+}
+
+body.dark-mode .navbar-light .navbar-nav .nav-link {
+    color: #f8f9fa;
+}
+
+body.dark-mode .navbar-light .navbar-toggler {
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+body.dark-mode .navbar-light .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23f8f9fa' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.dark-mode .table td, .dark-mode .table th {
+    color: #f8f9fa;
+}

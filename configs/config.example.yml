@@ -1,0 +1,13 @@
+address: 0.0.0.0
+port: 3000
+
+fne:
+  address: 127.0.0.1
+  port: 9990
+  password: "PASSWORD"
+
+influxdb:
+  url: "http://127.0.0.1:8086"
+  token: "PASSWORD"
+  org: "dvm"
+  bucket: "dvm"

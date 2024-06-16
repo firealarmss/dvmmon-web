@@ -1,0 +1,25 @@
+# Configs
+configs/*
+!configs/config.example.yml
+
+# DB
+db/*
+!db/.gitkeep
+
+.idea
+.idea/*
+.idea/**
+
+# Tests
+tests/*
+tests
+
+bin/
+bin/*
+bin/**
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
