@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>Name: ${tg.name}</p>
                         <p>Slot: ${tg.source.slot}</p>
                         <p>Active: ${tg.config.active}</p>
-                        <button class="btn btn-warning" onclick="editTG(${tg.source.tgid}, '${tg.name}', ${tg.source.slot}, ${tg.config.active}, ${tg.config.parrot})">Edit</button>
+                        <button class="btn btn-warning" onclick="editTG(${tg.source.tgid}, '${tg.name}', ${tg.source.slot}, ${tg.config.active}, ${tg.config.parrot}, ${tg.config.affiliated})">Edit</button>
                         <button class="btn btn-danger" onclick="deleteTG(${tg.source.tgid}, ${tg.source.slot})">Delete</button>
                     </div>
                 `;
@@ -85,12 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function editTG(tgid, name, slot, active, parrot) {
+function editTG(tgid, name, slot, active, parrot, affiliated) {
     document.getElementById('editTgName').value = name;
     document.getElementById('editTgSlot').value = slot;
     document.getElementById('editTgIdInput').value = tgid;
     document.getElementById('editTgActive').value = active.toString();
     document.getElementById('editTgParrot').value = parrot.toString();
+    document.getElementById('editTgAffiliated').value = affiliated.toString();
+
     $('#editTgModal').modal('show');
 }
 
