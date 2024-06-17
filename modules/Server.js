@@ -1,11 +1,13 @@
 const express = require('express');
+const session = require('express-session');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const fs = require('fs');
 const yaml = require('yaml');
-const RESTClient = require('./RESTClient');
 const FneInflux = require('./FneInflux');
+const DBManager = require("./DBManager");
+const RESTClient = require('./RESTClient');
 const RidHanlder = require("./RidHandler");
 const TgidHandler = require("./TgidHandler");
 
@@ -17,6 +19,7 @@ class Server {
         this.port = this.config.port;
 
         this.fneInflux = new FneInflux(this.config.influxdb);
+        this.dbManager = new DBManager(path.join(__dirname, '../db/users.db'));
 
         this.app = express();
         this.server = http.createServer(this.app);
@@ -42,39 +45,105 @@ class Server {
     setupMiddleware() {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(session({
+            secret: 'your_secret_key',
+            resave: false,
+            saveUninitialized: true
+        }));
         this.app.set('view engine', 'ejs');
         this.app.use(express.static(path.join(__dirname, '../public')));
     }
 
     setupRoutes() {
         this.app.get('/', (req, res) => {
-            res.render('index');
+            res.render('index', { user: req.session.user });
+        });
+
+        this.app.get('/login', (req, res) => {
+            res.render('login');
+        });
+
+        this.app.post('/login', (req, res) => {
+            const { username, password } = req.body;
+            this.dbManager.authenticateUser(username, password, (err, user) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Internal Server Error');
+                } else if (!user) {
+                    res.status(401).send('Invalid Credentials');
+                } else {
+                    req.session.user = user;
+                    res.redirect('/');
+                }
+            });
+        });
+
+        this.app.get('/logout', (req, res) => {
+            req.session.destroy((err) => {
+                if (err) console.error(err);
+                res.redirect('/login');
+            });
+        });
+
+        this.app.get('/users', this.checkAuth, (req, res) => {
+            this.dbManager.getAllUsers((err, users) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.render('users', { users, user: req.session.user });
+                }
+            });
+        });
+
+        this.app.post('/users', this.checkAuth, (req, res) => {
+            const { username, password } = req.body;
+            this.dbManager.createUser(username, password, (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.redirect('/users');
+                }
+            });
+        });
+
+        this.app.delete('/users/:id', this.checkAuth, (req, res) => {
+            const userId = req.params.id;
+            this.dbManager.deleteUser(userId, (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.sendStatus(204);
+                }
+            });
         });
 
         this.app.get('/affiliations', async (req, res) => {
             const affiliations = await this.fetchAffiliationData();
-            res.render('affiliations', { affiliations });
+            res.render('affiliations', { affiliations, user: req.session.user });
         });
 
-        this.app.get('/rids', async (req, res) => {
+        this.app.get('/rids', this.checkAuth, async (req, res) => {
             const rids = await this.fetchRIDData();
-            res.render('rids', { rids });
+            res.render('rids', { rids, user: req.session.user });
         });
 
-        this.app.get('/tgids', async (req, res) => {
+        this.app.get('/tgids', this.checkAuth, async (req, res) => {
             const tgids = await this.fetchTGData();
-            res.render('tgids', { tgids });
+            res.render('tgids', { tgids, user: req.session.user });
         });
 
-        this.app.get('/rid/query', RidHanlder.query.bind(this));
-        this.app.put('/rid/add', RidHanlder.add.bind(this));
-        this.app.put('/rid/delete', RidHanlder.delete.bind(this));
-        this.app.get('/rid/commit', RidHanlder.commit.bind(this));
+        this.app.get('/rid/query', this.checkAuth, RidHanlder.query.bind(this));
+        this.app.put('/rid/add', this.checkAuth, RidHanlder.add.bind(this));
+        this.app.put('/rid/delete', this.checkAuth, RidHanlder.delete.bind(this));
+        this.app.get('/rid/commit', this.checkAuth, RidHanlder.commit.bind(this));
 
-        this.app.get('/tg/query', TgidHandler.query.bind(this));
-        this.app.put('/tg/add', TgidHandler.add.bind(this));
-        this.app.put('/tg/delete', TgidHandler.delete.bind(this));
-        this.app.get('/tg/commit', TgidHandler.commit.bind(this));
+        this.app.get('/tg/query', this.checkAuth, TgidHandler.query.bind(this));
+        this.app.put('/tg/add', this.checkAuth, TgidHandler.add.bind(this));
+        this.app.put('/tg/delete', this.checkAuth, TgidHandler.delete.bind(this));
+        this.app.get('/tg/commit', this.checkAuth, TgidHandler.commit.bind(this));
     }
 
     setupSocketIO() {
@@ -205,6 +274,14 @@ class Server {
         allData.affiliations = affiliationData;
 
         this.io.emit('update', allData);
+    }
+
+    checkAuth(req, res, next) {
+        if (req.session && req.session.user) {
+            next();
+        } else {
+            res.redirect('/login');
+        }
     }
 
     start() {
