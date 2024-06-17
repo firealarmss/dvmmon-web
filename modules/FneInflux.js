@@ -1,10 +1,12 @@
 const { InfluxDB } = require('@influxdata/influxdb-client');
 
 class FneInflux {
-    constructor(config) {
+    constructor(config, debug = false) {
         this.influxDB = new InfluxDB({ url: config.url, token: config.token });
         this.queryApi = this.influxDB.getQueryApi(config.org);
         this.bucket = config.bucket;
+
+        this.debug = debug;
     }
 
     async fetchAllChannelData() {
@@ -47,7 +49,12 @@ class FneInflux {
 
             return allData;
         } catch (error) {
-            console.error('Error fetching data from InfluxDB:', error);
+            console.error('Error fetching data from InfluxDB');
+
+            if (this.debug) {
+                console.error(error);
+            }
+
             return null;
         }
     }
