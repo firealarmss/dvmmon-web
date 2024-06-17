@@ -1,13 +1,28 @@
-address: 0.0.0.0
-port: 3000
+# Server configuration
+server:
+  # Server address to bind to
+  address: 0.0.0.0
+  # Server port to bind to
+  port: 3000
+  # Update interval to get data from Influx and FNE REST API to send to clients. (ms)
+  updateInterval: 2000
 
+# FNE REST API configuration
 fne:
+  # FNE REST API address
   address: 127.0.0.1
+  # FNE REST API port
   port: 9990
+  # FNE REST API password
   password: "PASSWORD"
 
+# FNE InfluxDB configuration
 influxdb:
+  # InfluxDB URL
   url: "http://127.0.0.1:8086"
+  # InfluxDB token
   token: "PASSWORD"
+  # InfluxDB organization
   org: "dvm"
+  # InfluxDB bucket
   bucket: "dvm"

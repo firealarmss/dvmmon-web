@@ -15,8 +15,9 @@ class Server {
     constructor(configPath) {
         this.configPath = configPath;
         this.config = this.loadConfig();
-        this.address = this.config.address;
-        this.port = this.config.port;
+        this.address = this.config.server.address || "0.0.0.0";
+        this.port = this.config.server.port || 3000;
+        this.updateInterval = this.config.server.updateInterval || 2000;
 
         this.fneInflux = new FneInflux(this.config.influxdb);
         this.dbManager = new DBManager(path.join(__dirname, '../db/users.db'));
@@ -287,7 +288,7 @@ class Server {
     start() {
         setInterval(() => {
             this.fetchAndEmitData();
-        }, 2000);
+        }, this.updateInterval);
 
         this.server.listen(this.port, this.address, () => {
             console.log(`Server is running on http://${this.address}:${this.port}`);
