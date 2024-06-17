@@ -63,6 +63,7 @@ class RESTClient {
             if (this.debug) {
                 this.logger.error("Error:", error.message);
             }
+
             throw new Error("ERRNO_INTERNAL_ERROR");
         }
     }

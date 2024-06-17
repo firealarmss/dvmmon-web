@@ -12,12 +12,13 @@ const RidHanlder = require("./RidHandler");
 const TgidHandler = require("./TgidHandler");
 
 class Server {
-    constructor(configPath) {
+    constructor(configPath, debug = false) {
         this.configPath = configPath;
         this.config = this.loadConfig();
         this.address = this.config.server.address || "0.0.0.0";
         this.port = this.config.server.port || 3000;
         this.updateInterval = this.config.server.updateInterval || 2000;
+        this.debug = this.config.server.debug || false;
 
         this.fneInflux = new FneInflux(this.config.influxdb);
         this.dbManager = new DBManager(path.join(__dirname, '../db/users.db'));
@@ -165,7 +166,12 @@ class Server {
             const response = await restClient.send('GET', '/peer/query', {});
             return response.peers || [];
         } catch (error) {
-            console.error('Error fetching peer query data:', error);
+            console.error('Error fetching peer query data');
+
+            if (this.debug) {
+                console.error(error);
+            }
+
             return [];
         }
     }
@@ -176,7 +182,12 @@ class Server {
             const response = await restClient.send('GET', '/report-affiliations', {});
             return response.affiliations || [];
         } catch (error) {
-            console.error('Error fetching affiliation data:', error);
+            console.error('Error fetching affiliation data');
+
+            if (this.debug) {
+                console.error(error);
+            }
+
             return [];
         }
     }
@@ -187,7 +198,12 @@ class Server {
             const response = await restClient.send('GET', '/rid/query', {});
             return response.rids || [];
         } catch (error) {
-            console.error('Error fetching RID data:', error);
+            console.error('Error fetching RID data');
+
+            if (this.debug) {
+                console.error(error);
+            }
+
             return [];
         }
     }
@@ -198,7 +214,12 @@ class Server {
             const response = await restClient.send('GET', '/tg/query', {});
             return response.tgs || [];
         } catch (error) {
-            console.error('Error fetching TG data:', error);
+            console.error('Error fetching TG data');
+
+            if (this.debug) {
+                console.error(error);
+            }
+
             return [];
         }
     }

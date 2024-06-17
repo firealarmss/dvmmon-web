@@ -12,5 +12,5 @@ const argv = yargs(hideBin(process.argv))
     .help()
     .argv;
 
-const server = new Server(argv.config);
+const server = new Server(argv.config, false);
 server.start();
