@@ -169,7 +169,7 @@ class Server {
         const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
         try {
             const response = await restClient.send('GET', '/peer/query', {});
-            return response.peers || [];
+            return await this.validPeers(response.peers) || [];
         } catch (error) {
             console.error('Error fetching peer query data');
 
@@ -310,6 +310,32 @@ class Server {
         } else {
             res.redirect('/login');
         }
+    }
+
+    async validatePeer(peer) {
+        if (!peer.peerId) {
+            return false;
+        }
+
+        return !(this.config.server.ignoredPeers && this.config.server.ignoredPeers.includes(peer.peerId));
+    }
+
+    async validPeers(peers) {
+        let validPeers = [];
+
+        if (!Array.isArray(peers)) {
+            return false;
+        }
+
+        for (const peer of peers) {
+            if (peer.peerId) {
+                if (await this.validatePeer(peer)) {
+                    validPeers.push(peer);
+                }
+            }
+        }
+
+        return validPeers;
     }
 
     start() {

@@ -6,6 +6,8 @@ server:
   port: 3000
   # Update interval to get data from Influx and FNE REST API to send to clients. (ms)
   updateInterval: 2000
+  # Global ignored peers. These peers are removed upon receiving data from FNE and will never be sent anywhere.
+  ignoredPeers: []
 
 # FNE REST API configuration
 fne:
