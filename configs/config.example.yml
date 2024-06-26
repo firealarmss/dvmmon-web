@@ -6,6 +6,8 @@ server:
   port: 3000
   # Update interval to get data from Influx and FNE REST API to send to clients. (ms)
   updateInterval: 2000
+  # Skip affiliations from ignored peers. If true, affiliations from ignored peers are not sent to clients.
+  skipAffiliationsFromIgnoredPeers: true
   # Global ignored peers. These peers are removed upon receiving data from FNE and will never be sent anywhere.
   ignoredPeers: []
 

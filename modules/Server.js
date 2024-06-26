@@ -185,7 +185,7 @@ class Server {
         const restClient = new RESTClient(this.config.fne.address, this.config.fne.port, this.config.fne.password, false);
         try {
             const response = await restClient.send('GET', '/report-affiliations', {});
-            return response.affiliations || [];
+            return await this.validAffiliations(response.affiliations) || [];
         } catch (error) {
             console.error('Error fetching affiliation data');
 
@@ -320,6 +320,30 @@ class Server {
         return !(this.config.server.ignoredPeers && this.config.server.ignoredPeers.includes(peer.peerId));
     }
 
+    async validAffiliations(affiliations) {
+        let validAffiliations = [];
+
+        if (!Array.isArray(affiliations)) {
+            return false;
+        }
+
+        if (!this.config.server.skipAffiliationsFromIgnoredPeers) {
+            return affiliations;
+        }
+
+        for (const affiliation of affiliations) {
+            if (affiliation.peerId && await this.validatePeer(affiliation)) {
+                validAffiliations.push(affiliation);
+            } else {
+                if (this.debug) {
+                    console.log('Ignoring affiliation from peer:', affiliation);
+                }
+            }
+        }
+
+        return validAffiliations
+    }
+
     async validPeers(peers) {
         let validPeers = [];
 
@@ -328,10 +352,8 @@ class Server {
         }
 
         for (const peer of peers) {
-            if (peer.peerId) {
-                if (await this.validatePeer(peer)) {
-                    validPeers.push(peer);
-                }
+            if (peer.peerId && await this.validatePeer(peer)) {
+                validPeers.push(peer);
             }
         }
 
