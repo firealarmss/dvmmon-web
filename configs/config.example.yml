@@ -4,6 +4,8 @@ server:
   address: 0.0.0.0
   # Server port to bind to
   port: 3000
+  # Update interval to reload the config file. (ms, 0 to disable) NOTE: This will not update the server binding info.
+  configUpdateInterval: 10000
   # Update interval to get data from Influx and FNE REST API to send to clients. (ms)
   updateInterval: 2000
   # Skip affiliations from ignored peers. If true, affiliations from ignored peers are not sent to clients.

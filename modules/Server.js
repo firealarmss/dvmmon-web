@@ -360,10 +360,23 @@ class Server {
         return validPeers;
     }
 
+    startConfigReload(interval) {
+        if (interval <= 0) {
+            return;
+        }
+
+        setInterval(() => {
+            this.config = this.loadConfig();
+            console.log("Config file reloaded");
+        }, interval);
+    }
+
     start() {
         setInterval(() => {
             this.fetchAndEmitData();
         }, this.updateInterval);
+
+        this.startConfigReload(this.config.server.configUpdateInterval || 0);
 
         this.server.listen(this.port, this.address, () => {
             console.log(`Server is running on http://${this.address}:${this.port}`);
