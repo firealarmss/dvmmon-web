@@ -5,6 +5,7 @@ const socketIo = require('socket.io');
 const path = require('path');
 const fs = require('fs');
 const yaml = require('yaml');
+const enableDestroy = require('server-destroy');
 const FneInflux = require('./FneInflux');
 const DBManager = require("./DBManager");
 const RESTClient = require('./RESTClient');
@@ -54,6 +55,8 @@ class Server {
         }));
         this.app.set('view engine', 'ejs');
         this.app.use(express.static(path.join(__dirname, '../public')));
+
+        enableDestroy(this.server);
     }
 
     setupRoutes() {
@@ -365,14 +368,44 @@ class Server {
             return;
         }
 
-        setInterval(() => {
-            this.config = this.loadConfig();
+        this.configReloadInterval = setInterval(() => {
+            const updatedConfig = this.loadConfig();
+
+            if (updatedConfig !== this.config) {
+                this.config = updatedConfig;
+            }
+
+            if (updatedConfig.server.port !== this.port || updatedConfig.server.address !== this.address) {
+                this.stop();
+                this.port = updatedConfig.server.port;
+                this.address = updatedConfig.server.address;
+                this.start();
+                console.log("Server restarted due to config change");
+            }
             console.log("Config file reloaded");
         }, interval);
     }
 
+    stopConfigReload() {
+        if (this.configReloadInterval) {
+            clearInterval(this.configReloadInterval);
+        }
+    }
+
+    stopFetchAndEmitInterval() {
+        if (this.featchAndEmitInterval) {
+            clearInterval(this.featchAndEmitInterval);
+        }
+    }
+
+    stop() {
+        this.server.destroy();
+        this.stopConfigReload();
+        this.stopFetchAndEmitInterval();
+    }
+
     start() {
-        setInterval(() => {
+        this.featchAndEmitInterval = setInterval(() => {
             this.fetchAndEmitData();
         }, this.updateInterval);
 
