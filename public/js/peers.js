@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortButton = document.getElementById('sortButton');
     const togglePaused = document.getElementById('togglePaused');
 
+    const netConnectionStatus = Object.freeze({
+        0: "Waiting Connection",
+        1: "Waiting Login",
+        2: "Waiting Auth",
+        3: "Waiting Config",
+        4: "Running",
+        5: "RPTL Received",
+        6: "Challenge Sent",
+        7: "MST Running",
+        0x7FFFFFF: "NET_STAT_INVALID"
+    });
+
     const socket = io();
 
     let paused = false;
@@ -57,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const peerId = peer.peerId || 'N/A';
         const identity = peer.config && peer.config.identity ? peer.config.identity : 'N/A';
         const address = peer.address || 'N/A';
-        const connectionState = peer.connectionState || 'N/A';
+        const connectionState = netConnectionStatus[peer.connectionState] || peer.connectionState || 'N/A';
         const rxFrequency = peer.config && peer.config.rxFrequency ? peer.config.rxFrequency : 'N/A';
         const txFrequency = peer.config && peer.config.txFrequency ? peer.config.txFrequency : 'N/A';
         const software = peer.config && peer.config.software ? peer.config.software : 'N/A';
