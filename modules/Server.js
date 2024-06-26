@@ -127,6 +127,11 @@ class Server {
             res.render('affiliations', { affiliations, user: req.session.user });
         });
 
+        this.app.get('/peers', async (req, res) => {
+            const peers = await this.fetchPeerQueryData();
+            res.render('peers', { peers, user: req.session.user });
+        });
+
         this.app.get('/rids', this.checkAuth, async (req, res) => {
             const rids = await this.fetchRIDData();
             res.render('rids', { rids, user: req.session.user });
@@ -294,6 +299,7 @@ class Server {
         });
 
         allData.affiliations = affiliationData;
+        allData.peers = peerQueryData;
 
         this.io.emit('update', allData);
     }

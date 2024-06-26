@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peer List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<%- include('partials/header', { user: user }) %>
+
+<div class="container mt-4">
+    <h1 class="mt-4">Peer List</h1>
+    <h4>Peer Count: <span id="peer-count"><%= peers.length %></span></h4>
+    <input type="text" id="peerIdSearch" placeholder="Filter by Peer ID" class="form-control mb-3">
+    <div class="mb-3">
+        <label for="sortingMethod" class="form-label">Sort by:</label>
+        <select id="sortingMethod" class="form-select">
+            <option value="asc">Peer ID (Ascending)</option>
+            <option value="desc">Peer ID (Descending)</option>
+            <option value="connState">Connection State</option>
+            <option value="software">Software Type</option>
+        </select>
+        <button id="sortButton" class="btn btn-primary mt-2">Sort</button>
+        <button id="togglePaused" class="btn btn-primary mt-2">Pause Updates</button>
+    </div>
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Connected</th>
+            <th>Connection State</th>
+            <th>Peer ID</th>
+            <th>Identity</th>
+            <th>Address</th>
+            <th>Rx Frequency</th>
+            <th>Tx Frequency</th>
+            <th>Software</th>
+        </tr>
+        </thead>
+        <tbody id="peer-list">
+        <% peers.forEach(peer => { %>
+            <tr class="<%= peer.connectionState.toString() !== '4' ? 'table-warning' : '' %>">
+                <td><%= peer.connected ? 'Yes' : 'No' %></td>
+                <td><%= peer.connectionState %></td>
+                <td><%= peer.peerId %></td>
+                <td><%= peer.config.identity %></td>
+                <td><%= peer.address %></td>
+                <td><%= peer.config.rxFrequency %></td>
+                <td><%= peer.config.txFrequency %></td>
+                <td><%= peer.config.software %></td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/peers.js"></script>
+<script src="/js/theme-toggle.js"></script>
+</body>
+</html>
