@@ -127,7 +127,7 @@ class Server {
             res.render('affiliations', { affiliations, user: req.session.user });
         });
 
-        this.app.get('/peers', async (req, res) => {
+        this.app.get('/peers', this.checkAuth, async (req, res) => {
             const peers = await this.fetchPeerQueryData();
             res.render('peers', { peers, user: req.session.user });
         });
